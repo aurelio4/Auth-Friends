@@ -63,10 +63,12 @@ function authenticator(req, res, next) {
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
   if (username === 'qwe' && password === 'asd') {
-    req.loggedIn = true;
-    res.status(200).json({
-      payload: token
-    });
+     setTimeout(() => {
+      req.loggedIn = true;
+      res.status(200).json({
+        payload: token
+      });
+     }, 1500)
   } else {
     res
       .status(403)
@@ -75,6 +77,7 @@ app.post('/api/login', (req, res) => {
 });
 
 app.get('/api/friends', authenticator, (req, res) => {
+  console.log('test')
   setTimeout(() => {
     res.send(friends);
   }, 1000);

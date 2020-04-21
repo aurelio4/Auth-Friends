@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { axiosWithHeader } from '../utils/axiosWithHeader'
 import '../App.css'
 import {
   Container,
@@ -9,20 +10,37 @@ import {
   InputGroupAddon,
   Input,
   Button,
-  Form
+  Form,
+  Spinner
 } from 'reactstrap'
 
 const Login = (props) => {
+  const [user, setUser] = useState({username: '', password: ''})
+  const [isLoading, setIsLoading] = useState(false)
+  const handleChange = e => setUser({...user, [e.target.name]: e.target.value })
+  const login = e => {
+    e.preventDefault()
+    setIsLoading(true)
+    axiosWithHeader()
+      .post('/api/login', user)
+      .then(res => {
+        localStorage.setItem('key', res.data.payload)
+        setIsLoading(false)
+        props.history.push('/friends')
+      })
+      .catch(err => console.log(err))
+  }
+
   return(
-    <Form className="login-form">
+    <Form className="login-form" onSubmit={login}>
       <Container>
-        <Row sm="12" md={{ size: 6, offset: 3 }}>
+        <Row>
           <Col>
             <InputGroup>
               <InputGroupAddon addonType="prepend">
                 <InputGroupText>Username: </InputGroupText>
               </InputGroupAddon>
-              <Input type="text" />
+              <Input type="text" name="username" value={user.username} onChange={handleChange} />
             </InputGroup>
           </Col>
           <Col>
@@ -30,10 +48,10 @@ const Login = (props) => {
               <InputGroupAddon addonType="prepend">
                 <InputGroupText>Password: </InputGroupText>
               </InputGroupAddon>
-              <Input type="password" />
+              <Input type="password" name="password" value={user.password} onChange={handleChange} />
             </InputGroup>
           </Col>
-        <Button color="primary">Submit</Button>
+        <Button color="primary">{isLoading ? <Spinner color="dark" /> : 'Submit'}</Button>
         </Row>
       </Container>
     </Form>
