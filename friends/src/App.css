@@ -1,0 +1,22 @@
+.login-form {
+  margin-top: 20px;
+}
+
+.friend-card {
+  display: flex;
+  flex-direction: row;
+  width: 250px;
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+.spinner {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.add-friend-form {
+  margin-top: 15px;
+  margin-left: 25%;
+  margin-right: 25%;
+}
