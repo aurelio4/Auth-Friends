@@ -4,7 +4,11 @@ import {
   Card,
   CardTitle,
   CardText,
-  Spinner
+  Spinner,
+  Form,
+  FormGroup,
+  Input,
+  Button
 } from 'reactstrap'
 import '../App.css'
 
@@ -21,8 +25,22 @@ const FriendCard = (props) => {
   )
 }
 
+const AddFriend = (props) => {
+  return (
+    <Form className="add-friend-form">
+      <FormGroup>
+        <Input type="text" placeholder="Name" name="name" value={props.friendToAdd.name} onChange={props.handleChange} />
+        <Input type="text" placeholder="Age"  name="age" value={props.friendToAdd.age} onChange={props.handleChange} />
+        <Input type="email" placeholder="Email" name="email" value={props.friendToAdd.email} onChange={props.handleChange} />
+        <Button color="primary" onClick={props.addFriend}>Add</Button>
+      </FormGroup>
+    </Form>
+  )
+}
+
 const FriendsList = (props) => {
   const [friends, setFriends] = useState([])
+  const [friendToAdd, setFriendToAdd] = useState({name: '', age: '', email: ''})
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -39,13 +57,28 @@ const FriendsList = (props) => {
     .finally(() => setIsLoading(false))
   }, [])
 
+  const handleChange = e => {
+    setFriendToAdd({...friendToAdd, [e.target.name]: e.target.value })
+  }
+
+  const addFriend = () => {
+    setFriends([...friends, friendToAdd])
+  }
+
   if(isLoading) {
     return <div className="spinner"><Spinner type="grow" color="dark" /></div>
   }
 
   return error 
     ? <ErrorMessage error={error} />
-    : friends.map(friend => <FriendCard key={friend.id} name={friend.name} email={friend.email} />)
+    : (
+        <>
+          <AddFriend friendToAdd={friendToAdd} handleChange={handleChange} addFriend={addFriend} />
+          {friends.map(friend => {
+            return <FriendCard key={friend.id} name={friend.name} email={friend.email} />
+          })}
+        </>
+      )
 }
 
 export default FriendsList
